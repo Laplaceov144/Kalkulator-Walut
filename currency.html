@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Walutowy</title>
+    <style>
+        body {
+            font-family: Helvetica;
+            background-color: burlywood;
+        }
+        form span input {
+            margin-right: 10px;
+        }
+        form span {
+            display: block;
+            padding-bottom: 10px;
+        }
+        button {
+            margin-top: 10px;
+        }
+        #result {
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <h1>Kalkulator Walutowy</h1>
+    <form>
+        <span><label for="amount">Kwota</label>
+            <input id="amount" name="amount" type="text">
+        <label for="input-currency">z: </label>
+            <input id="input-currency" name="input-currency" placeholder="PLN" type="text">
+        <label for="output-currency">do: </label>
+            <input id="output-currency" name="output-currency" placeholder="EUR" type="text"></span>
+        <button type="submit">Przelicz</button>
+    </form>
+    <h2>Wynik: <span id="result"></span></h2>
+
+
+    <script>
+        
+        const result = document.querySelector('#result');
+        
+        document.querySelector('form').onsubmit = () => {
+            fetch('https://api.freecurrencyapi.com/v1/latest?apikey=fca_live_2jBEhO0Ir0H0hELl6sV8MtV47EOt3hoa5EtITg6O')
+            .then(response => response.json()).then(data => {
+                    
+                    const amount = parseFloat(document.querySelector('#amount').value);
+                    const inCurr = document.querySelector('#input-currency').value.toUpperCase();
+                    const outCurr = document.querySelector('#output-currency').value.toUpperCase();
+                    
+                    if(data.data[inCurr] != undefined && data.data[outCurr] != undefined) {
+                        result.innerHTML = (data.data[outCurr] * amount / data.data[inCurr]).toFixed(2) + " " + outCurr;
+                    
+                    } else result.innerHTML = 'Nieprawidłowy kod waluty.'
+
+                }).catch(error => {
+                    result.innerHTML = `Błąd: ${error}`;
+                });
+            return false;
+        }
+        
+    </script>
+</body>
+</html>
